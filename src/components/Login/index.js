@@ -1,14 +1,20 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ImageBackground} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Divider} from 'react-native-elements';
-import {Scroll} from '../common';
+import {Scroll, ImageBackground} from '../common';
 import {Header, Logo, SignUp, SignIn, ForgotPass, Info} from './components';
 
 class Login extends Component {
     render() {
         return (
-            <ImageBackground source={require('../../assets/images/login/bg1.jpg')}
-                             style={{width: '100%', height: '100%'}}>
+            <ImageBackground
+                imagePaths={[
+                    require('../../assets/images/login/bg1.jpg'),
+                    require('../../assets/images/login/bg2.jpg'),
+                    require('../../assets/images/login/bg3.jpg'),
+                    require('../../assets/images/login/bg4.jpg')
+                ]}
+            >
                 <Scroll>
                     <Logo/>
                     <View style={styles.container}>

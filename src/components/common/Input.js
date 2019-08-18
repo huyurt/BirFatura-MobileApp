@@ -7,7 +7,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const MyInput = props => {
     return (
         <Input
-            placeholder={props.placeHolder}
             leftIcon={
                 <Icon
                     name={props.iconName}
@@ -15,6 +14,8 @@ const MyInput = props => {
                     color={props.placeHolderTextColor}
                 />
             }
+            secureTextEntry={props.password}
+            placeholder={props.placeHolder}
             placeholderTextColor={props.placeHolderTextColor}
             containerStyle={[styles.container, props.containerStyle]}
             inputStyle={[styles.input, props.inputStyle]}
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
 });
 
 MyInput.propTypes = {
+    password: PropTypes.bool,
     iconName: PropTypes.string.isRequired,
     iconSize: PropTypes.number,
     placeHolder: PropTypes.string.isRequired,
@@ -52,6 +54,7 @@ MyInput.propTypes = {
 };
 
 MyInput.defaultProps = {
+    password: false,
     placeHolderTextColor: '#ccc',
     iconSize: 13
 };

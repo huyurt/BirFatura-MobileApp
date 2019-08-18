@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "moment": "^2.24.0",
     "opencollective-postinstall": "^2.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",

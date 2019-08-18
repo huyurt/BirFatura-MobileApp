@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, ViewPropTypes, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Input} from "../common";
 import {Button, CheckBox} from "react-native-elements";
@@ -17,6 +17,7 @@ const SignIn = props => {
                 placeHolder='E-posta adresiniz'
             />
             <Input
+                password={true}
                 iconName='lock'
                 placeHolder='Şifreniz'
             />
