@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {CustomInput} from "../../components";
 import {Button, CheckBox} from "react-native-elements";
+import {navigate} from "../../references/navigationReference";
+import {CustomInput} from "../../components";
 
-const SignInContainer = ({headerText, onSubmit}) => {
+const SignUpContainer = ({headerText, onSubmit}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordValidate, setPasswordValidate] = useState('');
 
     return (
         <View>
@@ -31,19 +33,38 @@ const SignInContainer = ({headerText, onSubmit}) => {
                 value={password}
                 onChangeText={setPassword}
             />
+            <CustomInput
+                password={true}
+                iconName='lock'
+                placeHolder='Şifrenizin Tekrarı'
+                autoCapitalize='none'
+                autoCorrect={false}
+                value={passwordValidate}
+                onChangeText={setPasswordValidate}
+            />
             <View style={styles.footerContainer}>
                 <CheckBox
-                    title='Beni Hatırla'
+                    title='Kullanım koşullarını okudum ve kabul ediyorum.'
                     checked
                     textStyle={styles.footerCheckBoxText}
                     containerStyle={styles.footerCheckBoxContainer}
                 />
+            </View>
+            <View style={styles.footerContainer}>
                 <Button
-                    title='GİRİŞ YAP'
-                    accessibilityLabel='GİRİŞ YAP'
-                    titleStyle={styles.footerButtonTitle}
-                    containerStyle={styles.footerButtonContainer}
-                    onPress={() => onSubmit({email, password})}
+                    title='< GERİ'
+                    buttonStyle={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                    accessibilityLabel='< GERİ'
+                    titleStyle={styles.footerButtonTitleBack}
+                    containerStyle={styles.footerButtonContainerBack}
+                    onPress={() => navigate('SignIn')}
+                />
+                <Button
+                    title='ÜYE OL'
+                    accessibilityLabel='ÜYE OL'
+                    titleStyle={styles.footerButtonTitleSignUp}
+                    containerStyle={styles.footerButtonContainerSignUp}
+                    onPress={() => onSubmit({email, password, passwordValidate})}
                 />
             </View>
         </View>
@@ -78,14 +99,23 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'normal'
     },
-    footerButtonContainer: {
+    footerButtonContainerBack: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center'
+    },
+    footerButtonContainerSignUp: {
         flex: 1,
         alignItems: 'flex-end',
         justifyContent: 'center'
     },
-    footerButtonTitle: {
+    footerButtonTitleBack: {
+        color: '#3598DC',
+        fontSize: 11
+    },
+    footerButtonTitleSignUp: {
         fontSize: 11
     }
 });
 
-export {SignInContainer};
+export {SignUpContainer};

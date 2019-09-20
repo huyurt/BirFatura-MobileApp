@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {Button} from "react-native-elements";
+import {navigate} from "../../references/navigationReference";
 import {CustomInput} from "../../components";
-import {Button, CheckBox} from "react-native-elements";
 
-const SignInContainer = ({headerText, onSubmit}) => {
+const ForgotPasswordContainer = ({headerText, onSubmit}) => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
 
     return (
         <View>
@@ -22,28 +22,21 @@ const SignInContainer = ({headerText, onSubmit}) => {
                 value={email}
                 onChangeText={setEmail}
             />
-            <CustomInput
-                password={true}
-                iconName='lock'
-                placeHolder='Şifreniz'
-                autoCapitalize='none'
-                autoCorrect={false}
-                value={password}
-                onChangeText={setPassword}
-            />
             <View style={styles.footerContainer}>
-                <CheckBox
-                    title='Beni Hatırla'
-                    checked
-                    textStyle={styles.footerCheckBoxText}
-                    containerStyle={styles.footerCheckBoxContainer}
+                <Button
+                    title='< GERİ'
+                    buttonStyle={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                    accessibilityLabel='< GERİ'
+                    titleStyle={styles.footerButtonTitleBack}
+                    containerStyle={styles.footerButtonContainerBack}
+                    onPress={() => navigate('SignIn')}
                 />
                 <Button
-                    title='GİRİŞ YAP'
-                    accessibilityLabel='GİRİŞ YAP'
-                    titleStyle={styles.footerButtonTitle}
-                    containerStyle={styles.footerButtonContainer}
-                    onPress={() => onSubmit({email, password})}
+                    title='ŞİFREMİ HATIRLAT'
+                    accessibilityLabel='ÜYE OL'
+                    titleStyle={styles.footerButtonTitleSignUp}
+                    containerStyle={styles.footerButtonContainerSignUp}
+                    onPress={() => onSubmit({email})}
                 />
             </View>
         </View>
@@ -78,14 +71,23 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'normal'
     },
-    footerButtonContainer: {
+    footerButtonContainerBack: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center'
+    },
+    footerButtonContainerSignUp: {
         flex: 1,
         alignItems: 'flex-end',
         justifyContent: 'center'
     },
-    footerButtonTitle: {
+    footerButtonTitleBack: {
+        color: '#3598DC',
+        fontSize: 11
+    },
+    footerButtonTitleSignUp: {
         fontSize: 11
     }
 });
 
-export {SignInContainer};
+export {ForgotPasswordContainer};

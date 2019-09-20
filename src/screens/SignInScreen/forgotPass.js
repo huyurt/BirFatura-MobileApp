@@ -1,22 +1,24 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import PropTypes from 'prop-types';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {navigate} from "../../references/navigationReference";
 
-const ForgotPass = props => {
+const ForgotPass = ({headerText, mainLinkText, mainText}) => {
     return (
         <View>
             <View style={styles.headerContainer}>
                 <Text style={styles.headerText}>
-                    {props.headerText}
+                    {headerText}
                 </Text>
             </View>
             <View style={styles.mainContainer}>
                 <Text>
-                    <Text style={styles.mainLinkText}>
-                        {props.mainLinkText}
+                    <Text style={styles.mainLinkText}
+                          onPress={() => navigate('ForgotPassword')}
+                    >
+                        {mainLinkText}
                     </Text>
                     <Text style={styles.mainText}>
-                        {props.mainText}
+                        {mainText}
                     </Text>
                 </Text>
             </View>
@@ -45,17 +47,5 @@ const styles = StyleSheet.create({
         fontSize: 12
     }
 });
-
-ForgotPass.propTypes = {
-    headerText: PropTypes.string,
-    mainLinkText: PropTypes.string,
-    mainText: PropTypes.string
-};
-
-ForgotPass.defaultProps = {
-    headerText: 'Şifrenizi Mi Unuttunuz?',
-    mainLinkText: 'Buraya',
-    mainText: ' tıklayarak şifrenizi sıfırlamayı talep edebilirsiniz.'
-};
 
 export {ForgotPass};

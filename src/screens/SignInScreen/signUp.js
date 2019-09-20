@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
+import {navigate} from "../../references/navigationReference";
 import {Button} from "react-native-elements";
 
 const SignUpContainer = props => {
@@ -11,6 +12,9 @@ const SignUpContainer = props => {
                 accessibilityLabel={props.buttonAccessibilityLabel}
                 color={props.buttonColor}
                 titleStyle={styles.buttonTitle}
+                onPress={() => {
+                    navigate('SignUp');
+                }}
             />
         </View>
     );

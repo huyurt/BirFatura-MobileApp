@@ -20,6 +20,8 @@ const MyInput = props => {
             containerStyle={[styles.container, props.containerStyle]}
             inputStyle={[styles.input, props.inputStyle]}
             inputContainerStyle={[styles.inputContainer, props.inputContainerStyle]}
+            onChangeText={props.onChangeText}
+            value={props.value}
         />
     );
 };
@@ -50,7 +52,9 @@ MyInput.propTypes = {
     placeHolderTextColor: PropTypes.string,
     containerStyle: ViewPropTypes.style,
     inputStyle: ViewPropTypes.style,
-    inputContainerStyle: ViewPropTypes.style
+    inputContainerStyle: ViewPropTypes.style,
+    onChangeText: PropTypes.func,
+    value: PropTypes.string
 };
 
 MyInput.defaultProps = {

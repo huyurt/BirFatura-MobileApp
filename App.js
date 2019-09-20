@@ -4,10 +4,14 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {setNavigator} from "./src/references/navigationReference";
 import {Provider as AuthProvider} from './src/context/AuthContext';
 import SignInScreen from './src/screens/SignInScreen';
+import SignUpScreen from "./src/screens/SignUpScreen";
+import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
 
 const navigator = createSwitchNavigator({
     loginFlow: createStackNavigator({
-        SignIn: SignInScreen
+        SignIn: SignInScreen,
+        SignUp: SignUpScreen,
+        ForgotPassword: ForgotPasswordScreen
     })
 });
 

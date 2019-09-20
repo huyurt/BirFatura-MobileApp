@@ -1,12 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import PropTypes from 'prop-types';
 
-const Header = props => {
+const Header = ({title}) => {
     return (
         <View style={styles.container}>
             <Text style={styles.baslik}>
-                {props.baslik}
+                {title}
             </Text>
         </View>
     );
@@ -24,13 +23,5 @@ const styles = StyleSheet.create({
         fontSize: 20
     }
 });
-
-Header.propTypes = {
-    baslik: PropTypes.string.isRequired
-};
-
-Header.defaultProps = {
-    baslik: 'Bir Fatura\'ya Hoş Geldiniz'
-};
 
 export {Header};

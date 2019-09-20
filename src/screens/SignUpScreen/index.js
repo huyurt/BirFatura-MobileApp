@@ -1,14 +1,15 @@
 import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Context as AuthContext} from '../../context/AuthContext';
 import {Divider} from 'react-native-elements';
 import {Scroll, ImageBackground} from '../../components';
-import {Header, Logo, SignUpContainer, SignInContainer, ForgotPass, Info} from './components';
-import {Context as AuthContext} from '../../context/AuthContext';
+import {Header, Logo, Info} from '../SignInScreen/components';
+import {SignUpContainer} from './components';
 
-const SignInScreen = ({navigation}) => {
-    const {state, signIn} = useContext(AuthContext);
+const SignUpScreen = ({navigation}) => {
+    const {state, signUp} = useContext(AuthContext);
 
-    return (
+    return(
         <ImageBackground
             imagePaths={[
                 require('../../assets/images/login/bg1.jpg'),
@@ -21,18 +22,12 @@ const SignInScreen = ({navigation}) => {
                 <Logo/>
                 <View style={styles.container}>
                     <Header
-                        title="Bir Fatura'ya Hoş Geldiniz"
+                        title="Bir Fatura'ya Üye Ol"
                     />
                     <Divider style={{marginBottom: 10, backgroundColor: 'white'}}/>
-                    <SignUpContainer/>
-                    <SignInContainer
-                        headerText='Hesabınızla giriş yapabilirsiniz:'
-                        onSubmit={signIn}
-                    />
-                    <ForgotPass
-                        headerText='Şifrenizi Unuttunuz Mu?'
-                        mainLinkText='Buraya'
-                        mainText=' tıklayarak şifrenizi sıfırlamayı talep edebilirsiniz.'
+                    <SignUpContainer
+                        headerText='Üye olmak için formu doldurun:'
+                        onSubmit={signUp}
                     />
                 </View>
                 <Info/>
@@ -41,7 +36,7 @@ const SignInScreen = ({navigation}) => {
     );
 };
 
-SignInScreen.navigationOptions = () => {
+SignUpScreen.navigationOptions = () => {
     return {
         header: null
     }
@@ -60,4 +55,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SignInScreen;
+export default SignUpScreen;
