@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {Context as AuthContext} from '../../context/AuthContext';
 import {Divider} from 'react-native-elements';
 import {Scroll, ImageBackground} from '../../components';
@@ -9,7 +9,7 @@ import {SignUpContainer} from './components';
 const SignUpScreen = ({navigation}) => {
     const {state, signUp} = useContext(AuthContext);
 
-    return(
+    return (
         <ImageBackground
             imagePaths={[
                 require('../../assets/images/login/bg1.jpg'),
@@ -25,8 +25,12 @@ const SignUpScreen = ({navigation}) => {
                         title="Bir Fatura'ya Üye Ol"
                     />
                     <Divider style={{marginBottom: 10, backgroundColor: 'white'}}/>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.header}>
+                            Üye olmak için formu doldurun:
+                        </Text>
+                    </View>
                     <SignUpContainer
-                        headerText='Üye olmak için formu doldurun:'
                         onSubmit={signUp}
                     />
                 </View>
@@ -52,6 +56,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'rgba(0,0,0,0.6)',
         borderRadius: 7
+    },
+    headerContainer: {
+        marginBottom: 10,
+        paddingHorizontal: 10
+    },
+    header: {
+        color: '#fff',
+        fontSize: 13
     }
 });
 

@@ -1,11 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Button} from "react-native-elements";
+import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import {navigate} from "../../references/navigationReference";
 import {CustomInput} from "../../components";
 
-const ForgotPasswordContainer = ({headerText, onSubmit}) => {
+const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, showMessage, message}) => {
+    const [messageShowed, setMessageShowed] = useState(false);
     const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        if (showMessage && !messageShowed) {
+            setMessageShowed(true);
+            flashShowMessage({
+                message: message,
+                position: 'bottom',
+                autoHide: false,
+                hideOnPress: true,
+                animated: true,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                onPress: () => {
+                    setMessageShowed(false);
+                    hideMessage();
+                }
+            });
+        }
+    });
 
     return (
         <View>
@@ -15,10 +36,10 @@ const ForgotPasswordContainer = ({headerText, onSubmit}) => {
                 </Text>
             </View>
             <CustomInput
-                iconName='user'
-                placeHolder='E-posta adresiniz'
+                iconName='envelope'
+                placeHolder='E-posta Adresiniz'
                 autoCapitalize='none'
-                autoCorrect={false}
+                keyboardType='email-address'
                 value={email}
                 onChangeText={setEmail}
             />
@@ -29,14 +50,25 @@ const ForgotPasswordContainer = ({headerText, onSubmit}) => {
                     accessibilityLabel='< GERİ'
                     titleStyle={styles.footerButtonTitleBack}
                     containerStyle={styles.footerButtonContainerBack}
-                    onPress={() => navigate('SignIn')}
+                    onPress={() => {
+                        hideMessage();
+                        flashHideMessage();
+                        navigate('SignIn');
+                    }}
                 />
                 <Button
                     title='ŞİFREMİ HATIRLAT'
                     accessibilityLabel='ÜYE OL'
-                    titleStyle={styles.footerButtonTitleSignUp}
-                    containerStyle={styles.footerButtonContainerSignUp}
-                    onPress={() => onSubmit({email})}
+                    titleStyle={styles.footerButtonTitle}
+                    containerStyle={styles.footerButtonContainer}
+                    loading={onPressed}
+                    disabled={onPressed}
+                    disabledStyle={styles.footerButtonDisabledContainer}
+                    onPress={() => {
+                        setMessageShowed(false);
+                        hideMessage();
+                        onSubmit({email});
+                    }}
                 />
             </View>
         </View>
@@ -76,17 +108,20 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'center'
     },
-    footerButtonContainerSignUp: {
-        flex: 1,
-        alignItems: 'flex-end',
-        justifyContent: 'center'
-    },
     footerButtonTitleBack: {
         color: '#3598DC',
         fontSize: 11
     },
-    footerButtonTitleSignUp: {
+    footerButtonContainer: {
+        flex: 1,
+        alignItems: 'flex-end',
+        justifyContent: 'center'
+    },
+    footerButtonTitle: {
         fontSize: 11
+    },
+    footerButtonDisabledContainer: {
+        backgroundColor: '#5EB7FF',
     }
 });
 

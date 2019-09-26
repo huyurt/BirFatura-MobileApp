@@ -14,6 +14,10 @@ const MyInput = props => {
                     color={props.placeHolderTextColor}
                 />
             }
+            leftIconContainerStyle={{minWidth: 20, alignItems: 'center'}}
+            autoCapitalize={props.autoCapitalize}
+            autoCorrect={props.autoCorrect}
+            keyboardType={props.keyboardType}
             secureTextEntry={props.password}
             placeholder={props.placeHolder}
             placeholderTextColor={props.placeHolderTextColor}
@@ -22,6 +26,8 @@ const MyInput = props => {
             inputContainerStyle={[styles.inputContainer, props.inputContainerStyle]}
             onChangeText={props.onChangeText}
             value={props.value}
+            rightIcon={props.rightIcon}
+            rightIconContainerStyle={[{marginRight: 10}, props.rightIconContainerStyle]}
         />
     );
 };
@@ -45,6 +51,9 @@ const styles = StyleSheet.create({
 });
 
 MyInput.propTypes = {
+    autoCapitalize: PropTypes.string,
+    autoCorrect: PropTypes.bool,
+    keyboardType: PropTypes.string,
     password: PropTypes.bool,
     iconName: PropTypes.string.isRequired,
     iconSize: PropTypes.number,
@@ -54,10 +63,14 @@ MyInput.propTypes = {
     inputStyle: ViewPropTypes.style,
     inputContainerStyle: ViewPropTypes.style,
     onChangeText: PropTypes.func,
-    value: PropTypes.string
+    value: PropTypes.string,
+    rightIcon: PropTypes.node,
+    rightIconContainerStyle: ViewPropTypes.style
 };
 
 MyInput.defaultProps = {
+    autoCapitalize: 'sentences',
+    autoCorrect: false,
     password: false,
     placeHolderTextColor: '#ccc',
     iconSize: 13

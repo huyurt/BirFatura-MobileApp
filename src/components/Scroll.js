@@ -7,9 +7,9 @@ const Scroll = props => {
         <KeyboardAvoidingView
             style={[styles.keyboardAvoidingView, props.keyboardAvoidingViewStyle]}
             behavior='padding'
-            keyboardVerticalOffset={1}
         >
             <ScrollView
+                keyboardShouldPersistTaps='handled'
                 contentContainerStyle={[styles.scrollViewContentContainer, props.scrollViewContentContainerStyle]}>
                 {props.children}
             </ScrollView>

@@ -6,6 +6,7 @@ import {Button, CheckBox} from "react-native-elements";
 const SignInContainer = ({headerText, onSubmit}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [checked, setChecked] = useState(true);
 
     return (
         <View>
@@ -15,10 +16,10 @@ const SignInContainer = ({headerText, onSubmit}) => {
                 </Text>
             </View>
             <CustomInput
-                iconName='user'
-                placeHolder='E-posta adresiniz'
+                iconName='envelope'
+                placeHolder='E-posta Adresiniz'
                 autoCapitalize='none'
-                autoCorrect={false}
+                keyboardType='email-address'
                 value={email}
                 onChangeText={setEmail}
             />
@@ -27,23 +28,25 @@ const SignInContainer = ({headerText, onSubmit}) => {
                 iconName='lock'
                 placeHolder='Şifreniz'
                 autoCapitalize='none'
-                autoCorrect={false}
                 value={password}
                 onChangeText={setPassword}
             />
             <View style={styles.footerContainer}>
                 <CheckBox
                     title='Beni Hatırla'
-                    checked
                     textStyle={styles.footerCheckBoxText}
                     containerStyle={styles.footerCheckBoxContainer}
+                    checked={checked}
+                    onPress={() => setChecked(!checked)}
                 />
                 <Button
                     title='GİRİŞ YAP'
                     accessibilityLabel='GİRİŞ YAP'
                     titleStyle={styles.footerButtonTitle}
                     containerStyle={styles.footerButtonContainer}
-                    onPress={() => onSubmit({email, password})}
+                    onPress={() => {
+                        onSubmit({email, password});
+                    }}
                 />
             </View>
         </View>

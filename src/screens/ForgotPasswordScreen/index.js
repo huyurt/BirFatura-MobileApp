@@ -1,15 +1,16 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Context as AuthContext} from '../../context/AuthContext';
 import {Divider} from 'react-native-elements';
 import {Scroll, ImageBackground} from '../../components';
 import {Header, Logo, Info} from '../SignInScreen/components';
 import {ForgotPasswordContainer} from './components';
+import {showMessage as flashShowMessage} from "react-native-flash-message";
 
 const ForgotPasswordScreen = ({navigation}) => {
-    const {state, forgotPassword} = useContext(AuthContext);
+    const {state, hideMessage, forgotPassword} = useContext(AuthContext);
 
-    return(
+    return (
         <ImageBackground
             imagePaths={[
                 require('../../assets/images/login/bg1.jpg'),
@@ -28,6 +29,10 @@ const ForgotPasswordScreen = ({navigation}) => {
                     <ForgotPasswordContainer
                         headerText='Şifrenizi sıfırlamak için e-posta adresinizi girin:'
                         onSubmit={forgotPassword}
+                        onPressed={state.onPressed}
+                        hideMessage={hideMessage}
+                        showMessage={state.showMessage}
+                        message={state.message}
                     />
                 </View>
                 <Info/>
