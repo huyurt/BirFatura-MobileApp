@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
 import {Button} from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome";
 import {navigate} from "../../references/navigationReference";
 import {CustomInput} from "../../components";
-import Icon from "react-native-vector-icons/FontAwesome";
+import useDimensions from "../../references/useDimensions";
 
 const SignUpContainer = ({onSubmit}) => {
     const [nameSurname, setNameSurname] = useState('');
@@ -15,29 +16,45 @@ const SignUpContainer = ({onSubmit}) => {
     const [eyeIcon, setEyeIcon] = useState('eye');
     const [hidePassword, setHidePassword] = useState(true);
 
-    const {width} = Dimensions.get('window');
-    const [xValue1] = useState(new Animated.Value(0));
-    const [xValue2] = useState(new Animated.Value(width));
+    const [screenWidth, setScreenWidth] = useState(Dimensions.get('screen').width);
+    const [xValueForm1] = useState(new Animated.Value(0));
+    const [xValueForm2] = useState(new Animated.Value(screenWidth));
+    const [form, setForm] = useState(1);
+    const screenData = useDimensions();
+
+    useEffect(() => {
+        setScreenWidth(screenData.width);
+        switch (form) {
+            case 1:
+                moveAnimation(true);
+                break;
+            case 2:
+                moveAnimation(false);
+                break;
+        }
+    });
+
     const moveAnimation = (back) => {
-        let widthWindow = back ? width : -width;
         let duration = 250;
         Animated.parallel([
-            Animated.timing(xValue1, {
-                toValue: back ? 0 : widthWindow,
+            Animated.timing(xValueForm1, {
+                toValue: back ? 0 : -screenWidth,
                 duration: duration,
                 easing: Easing.linear
             }),
-            Animated.timing(xValue2, {
-                toValue: back ? widthWindow : 0,
+            Animated.timing(xValueForm2, {
+                toValue: back ? screenWidth : 0,
                 duration: duration,
                 easing: Easing.linear
             })
-        ]).start();
+        ]).start(() => {
+            setForm(back ? 1 : 2);
+        });
     };
 
     return (
         <View style={{overflow: 'hidden'}}>
-            <Animated.View style={{position: 'relative', left: xValue1}}>
+            <Animated.View style={{position: 'relative', left: xValueForm1}}>
                 <CustomInput
                     iconName='user'
                     placeHolder='Adınız Soyadınız'
@@ -98,7 +115,7 @@ const SignUpContainer = ({onSubmit}) => {
                     />
                 </View>
             </Animated.View>
-            <Animated.View style={{position: 'absolute', width: '100%', left: xValue2}}>
+            <Animated.View style={{position: 'absolute', width: '100%', left: xValueForm2}}>
                 <CustomInput
                     iconName='building'
                     placeHolder='Firmanızın Adı'
