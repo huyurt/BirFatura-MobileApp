@@ -16,14 +16,14 @@ const SignUpContainer = ({onSubmit}) => {
     const [eyeIcon, setEyeIcon] = useState('eye');
     const [hidePassword, setHidePassword] = useState(true);
 
-    const [screenWidth, setScreenWidth] = useState(Dimensions.get('screen').width);
+    const [screenWidth, setScreenWidth] = useState(Math.max(Dimensions.get('screen').width, Dimensions.get('screen').height));
     const [xValueForm1] = useState(new Animated.Value(0));
     const [xValueForm2] = useState(new Animated.Value(screenWidth));
     const [form, setForm] = useState(1);
     const screenData = useDimensions();
 
     useEffect(() => {
-        setScreenWidth(screenData.width);
+        setScreenWidth(Math.max(screenData.width, screenData.height));
         switch (form) {
             case 1:
                 moveAnimation(true);
