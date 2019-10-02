@@ -4,8 +4,8 @@ import {Dimensions} from "react-native";
 const useDimensions = () => {
     const [screenData, setScreenData] = useState(Dimensions.get('screen'));
     useEffect(() => {
-        const onChange = result => {
-            setScreenData(result.screen);
+        const onChange = dimensions => {
+            setScreenData(dimensions.screen);
         };
         Dimensions.addEventListener('change', onChange);
         return () => Dimensions.removeEventListener('change', onChange);

@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, BackHandler, Text, View} from 'react-native';
+import PropTypes from 'prop-types';
 import {Button} from "react-native-elements";
 import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import {navigate} from "../../references/navigationReference";
+import {EmailValidate} from "../../references/validator";
 import {CustomInput} from "../../components";
 
-const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, showMessage, message}) => {
+const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, showMessage, message, isErrorMessage}) => {
     const [messageShowed, setMessageShowed] = useState(false);
     const [email, setEmail] = useState('');
+
+    BackHandler.addEventListener('hardwareBackPress', () => {
+        messageHide();
+    });
 
     useEffect(() => {
         if (showMessage && !messageShowed) {
@@ -21,12 +27,19 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
                 color: 'white',
                 onPress: () => {
-                    setMessageShowed(false);
-                    hideMessage();
+                    messageHide(true);
                 }
             });
         }
     });
+
+    const messageHide = (work = false) => {
+        if (messageShowed || work) {
+            setMessageShowed(false);
+            hideMessage();
+            flashHideMessage();
+        }
+    };
 
     return (
         <View>
@@ -42,6 +55,12 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                 keyboardType='email-address'
                 value={email}
                 onChangeText={setEmail}
+                flashMessageShowed={messageShowed && isErrorMessage}
+                onChange={() => {
+                    if (EmailValidate(email)) {
+                        messageHide();
+                    }
+                }}
             />
             <View style={styles.footerContainer}>
                 <Button
@@ -51,8 +70,7 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                     titleStyle={styles.footerButtonTitleBack}
                     containerStyle={styles.footerButtonContainerBack}
                     onPress={() => {
-                        hideMessage();
-                        flashHideMessage();
+                        messageHide();
                         navigate('SignIn');
                     }}
                 />
@@ -65,14 +83,23 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                     disabled={onPressed}
                     disabledStyle={styles.footerButtonDisabledContainer}
                     onPress={() => {
-                        setMessageShowed(false);
-                        hideMessage();
+                        messageHide();
                         onSubmit({email});
                     }}
                 />
             </View>
         </View>
     );
+};
+
+ForgotPasswordContainer.propTypes = {
+    headerText: PropTypes.string,
+    onSubmit: PropTypes.func,
+    hideMessage: PropTypes.func,
+    onPressed: PropTypes.bool,
+    showMessage: PropTypes.bool,
+    message: PropTypes.string,
+    isErrorMessage: PropTypes.bool
 };
 
 const styles = StyleSheet.create({

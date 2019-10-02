@@ -22,12 +22,22 @@ const MyInput = props => {
             placeholder={props.placeHolder}
             placeholderTextColor={props.placeHolderTextColor}
             containerStyle={[styles.container, props.containerStyle]}
-            inputStyle={[styles.input, props.inputStyle]}
-            inputContainerStyle={[styles.inputContainer, props.inputContainerStyle]}
+            inputStyle={[styles.input, props.inputStyle,
+                (props.flashMessageShowed ? {
+                    color: 'white'
+                } : null)]}
+            inputContainerStyle={[styles.inputContainer, props.inputContainerStyle,
+                (props.flashMessageShowed ? {
+                    borderColor: 'rgba(255, 0, 0, 0.1)',
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)'
+                } : null)]}
             onChangeText={props.onChangeText}
             value={props.value}
+            maxLength={props.maxLength}
             rightIcon={props.rightIcon}
             rightIconContainerStyle={[{marginRight: 10}, props.rightIconContainerStyle]}
+            onChange={props.onChange}
+            flashMessageShowed={props.flashMessageShowed}
         />
     );
 };
@@ -64,8 +74,11 @@ MyInput.propTypes = {
     inputContainerStyle: ViewPropTypes.style,
     onChangeText: PropTypes.func,
     value: PropTypes.string,
+    maxLength: PropTypes.number,
     rightIcon: PropTypes.node,
-    rightIconContainerStyle: ViewPropTypes.style
+    rightIconContainerStyle: ViewPropTypes.style,
+    onChange: PropTypes.func,
+    flashMessageShowed: PropTypes.bool
 };
 
 MyInput.defaultProps = {
@@ -73,7 +86,8 @@ MyInput.defaultProps = {
     autoCorrect: false,
     password: false,
     placeHolderTextColor: '#ccc',
-    iconSize: 13
+    iconSize: 13,
+    flashMessageShowed: false
 };
 
 export default MyInput;

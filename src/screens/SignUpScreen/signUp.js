@@ -1,26 +1,67 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
+import {StyleSheet, BackHandler, View, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
+import PropTypes from 'prop-types';
 import {Button} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import {navigate} from "../../references/navigationReference";
+import {
+    NameSurnameValidate,
+    EmailValidate,
+    PasswordValidate,
+    CompanyNameValidate,
+    MobilePhoneValidate, IsEmpty
+} from "../../references/validator";
 import {CustomInput} from "../../components";
 import useDimensions from "../../references/useDimensions";
+import CONSTANTS from "../../assets/constants";
 
-const SignUpContainer = ({onSubmit}) => {
+const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showMessage, message}) => {
     const [nameSurname, setNameSurname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [companyName, setCompanyName] = useState('');
     const [mobilePhone, setMobilePhone] = useState('');
 
+    const [invalidNameSurname, setInvalidNameSurname] = useState(false);
+    const [invalidEmail, setInvalidEmail] = useState(false);
+    const [invalidPassword, setInvalidPassword] = useState(false);
+    const [invalidCompanyName, setInvalidCompanyName] = useState(false);
+    const [invalidMobilePhone, setInvalidMobilePhone] = useState(false);
+
     const [eyeIcon, setEyeIcon] = useState('eye');
     const [hidePassword, setHidePassword] = useState(true);
+    const [messageShowed, setMessageShowed] = useState(false);
 
     const [screenWidth, setScreenWidth] = useState(Math.max(Dimensions.get('screen').width, Dimensions.get('screen').height));
     const [xValueForm1] = useState(new Animated.Value(0));
     const [xValueForm2] = useState(new Animated.Value(screenWidth));
     const [form, setForm] = useState(1);
     const screenData = useDimensions();
+    flashMessageController();
+
+    BackHandler.addEventListener('hardwareBackPress', () => {
+        messageHide();
+    });
+
+    function flashMessageController() {
+        useEffect(() => {
+            if (showMessage && !messageShowed) {
+                setMessageShowed(true);
+                flashShowMessage({
+                    message: message,
+                    position: 'bottom',
+                    autoHide: false,
+                    animated: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    color: 'white',
+                    onPress: () => {
+                        messageHide(true);
+                    }
+                });
+            }
+        }, [showMessage, messageShowed]);
+    }
 
     useEffect(() => {
         setScreenWidth(Math.max(screenData.width, screenData.height));
@@ -32,7 +73,15 @@ const SignUpContainer = ({onSubmit}) => {
                 moveAnimation(false);
                 break;
         }
-    });
+    }, [xValueForm1, xValueForm2]);
+
+    const messageHide = (work = false) => {
+        if (messageShowed || work) {
+            flashHideMessage();
+            hideMessage();
+            setMessageShowed(false);
+        }
+    };
 
     const moveAnimation = (back) => {
         let duration = 250;
@@ -40,12 +89,14 @@ const SignUpContainer = ({onSubmit}) => {
             Animated.timing(xValueForm1, {
                 toValue: back ? 0 : -screenWidth,
                 duration: duration,
-                easing: Easing.linear
+                easing: Easing.linear,
+                useNativeDriver: true
             }),
             Animated.timing(xValueForm2, {
                 toValue: back ? screenWidth : 0,
                 duration: duration,
-                easing: Easing.linear
+                easing: Easing.linear,
+                useNativeDriver: true
             })
         ]).start(() => {
             setForm(back ? 1 : 2);
@@ -54,13 +105,20 @@ const SignUpContainer = ({onSubmit}) => {
 
     return (
         <View style={{overflow: 'hidden'}}>
-            <Animated.View style={{position: 'relative', left: xValueForm1}}>
+            <Animated.View style={{position: 'relative', transform: [{translateX: xValueForm1}]}}>
                 <CustomInput
                     iconName='user'
                     placeHolder='Adınız Soyadınız'
                     autoCapitalize='none'
                     value={nameSurname}
                     onChangeText={setNameSurname}
+                    flashMessageShowed={invalidNameSurname}
+                    onChange={(e) => {
+                        if (invalidNameSurname && NameSurnameValidate(e.nativeEvent.text)) {
+                            setInvalidNameSurname(false);
+                            messageHide();
+                        }
+                    }}
                 />
                 <CustomInput
                     iconName='envelope'
@@ -69,6 +127,13 @@ const SignUpContainer = ({onSubmit}) => {
                     keyboardType='email-address'
                     value={email}
                     onChangeText={setEmail}
+                    flashMessageShowed={invalidEmail}
+                    onChange={(e) => {
+                        if (invalidEmail && EmailValidate(e.nativeEvent.text)) {
+                            setInvalidEmail(false);
+                            messageHide();
+                        }
+                    }}
                 />
                 <CustomInput
                     password={hidePassword}
@@ -77,6 +142,13 @@ const SignUpContainer = ({onSubmit}) => {
                     autoCapitalize='none'
                     value={password}
                     onChangeText={setPassword}
+                    flashMessageShowed={invalidPassword}
+                    onChange={(e) => {
+                        if (invalidPassword && PasswordValidate(e.nativeEvent.text)) {
+                            setInvalidPassword(false);
+                            messageHide();
+                        }
+                    }}
                     rightIcon={
                         <TouchableOpacity
                             onPress={() => {
@@ -104,24 +176,59 @@ const SignUpContainer = ({onSubmit}) => {
                         accessibilityLabel='< GERİ'
                         titleStyle={styles.footerButtonTitleBack}
                         containerStyle={styles.footerButtonContainerBack}
-                        onPress={() => navigate('SignIn')}
+                        onPress={() => {
+                            messageHide();
+                            navigate('SignIn')
+                        }}
                     />
                     <Button
                         title='İLERİ'
                         accessibilityLabel='İLERİ'
                         titleStyle={styles.footerButtonTitleSignUp}
                         containerStyle={styles.footerButtonContainerSignUp}
-                        onPress={() => moveAnimation(false)}
+                        onPress={() => {
+                            let message = '';
+                            let invalid = false;
+                            if (!NameSurnameValidate(nameSurname)) {
+                                message += CONSTANTS.INVALID_NAME_SURNAME;
+                                setInvalidNameSurname(true);
+                                invalid = true;
+                            }
+                            if (!EmailValidate(email)) {
+                                message += (!IsEmpty(message) ? '\n' : '') + CONSTANTS.INVALID_EMAIL;
+                                setInvalidEmail(true);
+                                invalid = true;
+                            }
+                            if (!PasswordValidate(password)) {
+                                message += (!IsEmpty(message) ? '\n' : '') + CONSTANTS.INVALID_PASSWORD;
+                                setInvalidPassword(true);
+                                invalid = true;
+                            }
+
+                            if (invalid) {
+                                onShowMessage({message});
+                            } else {
+                                messageHide();
+                                moveAnimation(false);
+                            }
+                        }}
                     />
                 </View>
             </Animated.View>
-            <Animated.View style={{position: 'absolute', width: '100%', left: xValueForm2}}>
+            <Animated.View style={{position: 'absolute', width: '100%', transform: [{translateX: xValueForm2}]}}>
                 <CustomInput
                     iconName='building'
                     placeHolder='Firmanızın Adı'
                     autoCapitalize='none'
                     value={companyName}
                     onChangeText={setCompanyName}
+                    flashMessageShowed={invalidCompanyName}
+                    onChange={(e) => {
+                        if (invalidCompanyName && CompanyNameValidate(e.nativeEvent.text)) {
+                            setInvalidCompanyName(false);
+                            messageHide();
+                        }
+                    }}
                 />
                 <CustomInput
                     iconName='phone'
@@ -129,7 +236,15 @@ const SignUpContainer = ({onSubmit}) => {
                     autoCapitalize='none'
                     keyboardType='phone-pad'
                     value={mobilePhone}
+                    maxLength={10}
                     onChangeText={setMobilePhone}
+                    flashMessageShowed={invalidMobilePhone}
+                    onChange={(e) => {
+                        if (invalidMobilePhone && MobilePhoneValidate(e.nativeEvent.text)) {
+                            setInvalidMobilePhone(false);
+                            messageHide();
+                        }
+                    }}
                 />
                 <View style={[styles.footerContainer]}>
                     <Text>
@@ -153,19 +268,54 @@ const SignUpContainer = ({onSubmit}) => {
                         accessibilityLabel='< GERİ'
                         titleStyle={styles.footerButtonTitleBack}
                         containerStyle={styles.footerButtonContainerBack}
-                        onPress={() => moveAnimation(true)}
+                        onPress={() => {
+                            messageHide(true);
+                            moveAnimation(true);
+                        }}
                     />
                     <Button
                         title='ÜYE OL'
                         accessibilityLabel='ÜYE OL'
                         titleStyle={styles.footerButtonTitleSignUp}
                         containerStyle={styles.footerButtonContainerSignUp}
-                        onPress={() => onSubmit({nameSurname, email, password, companyName, mobilePhone})}
+                        loading={onPressed}
+                        disabled={onPressed}
+                        disabledStyle={styles.footerButtonDisabledContainer}
+                        onPress={() => {
+                            let message = '';
+                            let invalid = false;
+                            if (!CompanyNameValidate(companyName)) {
+                                message += CONSTANTS.INVALID_COMPANY_NAME;
+                                setInvalidCompanyName(true);
+                                invalid = true;
+                            }
+                            if (!MobilePhoneValidate(mobilePhone)) {
+                                message += (!IsEmpty(message) ? '\n' : '') + CONSTANTS.INVALID_MOBILE_PHONE;
+                                setInvalidMobilePhone(true);
+                                invalid = true;
+                            }
+
+                            if (invalid) {
+                                onShowMessage({message});
+                            } else {
+                                messageHide();
+                                onSubmit({nameSurname, email, password, companyName, mobilePhone})
+                            }
+                        }}
                     />
                 </View>
             </Animated.View>
         </View>
     );
+};
+
+SignUpContainer.propTypes = {
+    onSubmit: PropTypes.func,
+    onShowMessage: PropTypes.func,
+    hideMessage: PropTypes.func,
+    onPressed: PropTypes.bool,
+    showMessage: PropTypes.bool,
+    message: PropTypes.string
 };
 
 const styles = StyleSheet.create({
@@ -212,6 +362,9 @@ const styles = StyleSheet.create({
     mainText: {
         color: 'white',
         fontSize: 12
+    },
+    footerButtonDisabledContainer: {
+        backgroundColor: '#5EB7FF',
     }
 });
 

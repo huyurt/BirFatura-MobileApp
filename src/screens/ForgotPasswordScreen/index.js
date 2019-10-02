@@ -33,6 +33,7 @@ const ForgotPasswordScreen = ({navigation}) => {
                         hideMessage={hideMessage}
                         showMessage={state.showMessage}
                         message={state.message}
+                        isErrorMessage={state.isErrorMessage}
                     />
                 </View>
                 <Info/>
