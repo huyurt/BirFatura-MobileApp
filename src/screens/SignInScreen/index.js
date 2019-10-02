@@ -4,9 +4,15 @@ import {Divider} from 'react-native-elements';
 import {Scroll, ImageBackground} from '../../components';
 import {Header, Logo, SignUpContainer, SignInContainer, ForgotPass, Info} from './components';
 import {Context as AuthContext} from '../../context/AuthContext';
+import {hideMessage as flashHideMessage} from "react-native-flash-message";
 
 const SignInScreen = ({navigation}) => {
-    const {state, signIn} = useContext(AuthContext);
+    const {state, signIn, onShowMessage, onHideMessage} = useContext(AuthContext);
+
+    const messageHide = () => {
+        flashHideMessage();
+        onHideMessage();
+    };
 
     return (
         <ImageBackground
@@ -24,15 +30,23 @@ const SignInScreen = ({navigation}) => {
                         title="Bir Fatura'ya Hoş Geldiniz"
                     />
                     <Divider style={{marginBottom: 10, backgroundColor: 'white'}}/>
-                    <SignUpContainer/>
+                    <SignUpContainer
+                        messageHide={messageHide}
+                    />
                     <SignInContainer
                         headerText='Hesabınızla giriş yapabilirsiniz:'
                         onSubmit={signIn}
+                        onShowMessage={onShowMessage}
+                        onHideMessage={onHideMessage}
+                        onPressed={state.onPressed}
+                        message={state.message}
+                        messageHide={messageHide}
                     />
                     <ForgotPass
                         headerText='Şifrenizi Unuttunuz Mu?'
                         mainLinkText='Buraya'
                         mainText=' tıklayarak şifrenizi sıfırlamayı talep edebilirsiniz.'
+                        messageHide={messageHide}
                     />
                 </View>
                 <Info/>

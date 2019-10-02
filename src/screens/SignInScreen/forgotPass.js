@@ -1,24 +1,28 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
+import PropTypes from 'prop-types';
 import {navigate} from "../../references/navigationReference";
 
-const ForgotPass = ({headerText, mainLinkText, mainText}) => {
+const ForgotPass = props => {
     return (
         <View>
             <View style={styles.headerContainer}>
                 <Text style={styles.headerText}>
-                    {headerText}
+                    {props.headerText}
                 </Text>
             </View>
             <View style={styles.mainContainer}>
                 <Text>
                     <Text style={styles.mainLinkText}
-                          onPress={() => navigate('ForgotPassword')}
+                          onPress={() => {
+                              props.messageHide();
+                              navigate('ForgotPassword')
+                          }}
                     >
-                        {mainLinkText}
+                        {props.mainLinkText}
                     </Text>
                     <Text style={styles.mainText}>
-                        {mainText}
+                        {props.mainText}
                     </Text>
                 </Text>
             </View>
@@ -47,5 +51,12 @@ const styles = StyleSheet.create({
         fontSize: 12
     }
 });
+
+ForgotPass.propTypes = {
+    headerText: PropTypes.string,
+    mainLinkText: PropTypes.string,
+    mainText: PropTypes.string,
+    messageHide: PropTypes.func
+};
 
 export {ForgotPass};

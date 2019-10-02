@@ -6,39 +6,39 @@ import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "
 import {navigate} from "../../references/navigationReference";
 import {EmailValidate} from "../../references/validator";
 import {CustomInput} from "../../components";
+import CONSTANTS from "../../assets/constants";
 
-const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, showMessage, message, isErrorMessage}) => {
-    const [messageShowed, setMessageShowed] = useState(false);
+const ForgotPasswordContainer = ({headerText, onSubmit, onShowMessage, onHideMessage, onPressed, message}) => {
     const [email, setEmail] = useState('');
+    const [invalidEmail, setInvalidEmail] = useState(false);
 
     BackHandler.addEventListener('hardwareBackPress', () => {
         messageHide();
     });
 
-    useEffect(() => {
-        if (showMessage && !messageShowed) {
-            setMessageShowed(true);
-            flashShowMessage({
-                message: message,
-                position: 'bottom',
-                autoHide: false,
-                hideOnPress: true,
-                animated: true,
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                color: 'white',
-                onPress: () => {
-                    messageHide(true);
-                }
-            });
-        }
-    });
+    flashMessageController();
 
-    const messageHide = (work = false) => {
-        if (messageShowed || work) {
-            setMessageShowed(false);
-            hideMessage();
-            flashHideMessage();
-        }
+    function flashMessageController() {
+        useEffect(() => {
+            if (message !== '') {
+                setTimeout(() => flashShowMessage({
+                    message: message,
+                    position: 'bottom',
+                    autoHide: false,
+                    animated: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    color: 'white',
+                    onPress: () => {
+                        messageHide();
+                    }
+                }), 100);
+            }
+        }, [message]);
+    }
+
+    const messageHide = () => {
+        flashHideMessage();
+        onHideMessage();
     };
 
     return (
@@ -55,9 +55,10 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                 keyboardType='email-address'
                 value={email}
                 onChangeText={setEmail}
-                flashMessageShowed={messageShowed && isErrorMessage}
-                onChange={() => {
-                    if (EmailValidate(email)) {
+                flashMessageShowed={invalidEmail}
+                onChange={(e) => {
+                    if (invalidEmail && EmailValidate(e.nativeEvent.text)) {
+                        setInvalidEmail(false);
                         messageHide();
                     }
                 }}
@@ -83,8 +84,14 @@ const ForgotPasswordContainer = ({headerText, onSubmit, hideMessage, onPressed, 
                     disabled={onPressed}
                     disabledStyle={styles.footerButtonDisabledContainer}
                     onPress={() => {
-                        messageHide();
-                        onSubmit({email});
+                        if (!EmailValidate(email)) {
+                            let message = CONSTANTS.INVALID_EMAIL;
+                            setInvalidEmail(true);
+                            onShowMessage({message});
+                        } else {
+                            messageHide();
+                            onSubmit({email});
+                        }
                     }}
                 />
             </View>
@@ -144,11 +151,11 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         justifyContent: 'center'
     },
-    footerButtonTitle: {
-        fontSize: 11
-    },
     footerButtonDisabledContainer: {
         backgroundColor: '#5EB7FF',
+    },
+    footerButtonTitle: {
+        fontSize: 11
     }
 });
 

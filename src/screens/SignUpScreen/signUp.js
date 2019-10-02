@@ -4,19 +4,16 @@ import PropTypes from 'prop-types';
 import {Button} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
+import HTML from "react-native-render-html";
+import CONSTANTS from "../../assets/constants";
 import {navigate} from "../../references/navigationReference";
 import {
-    NameSurnameValidate,
-    EmailValidate,
-    PasswordValidate,
-    CompanyNameValidate,
-    MobilePhoneValidate, IsEmpty
+    NameSurnameValidate, EmailValidate, PasswordValidate, CompanyNameValidate, MobilePhoneValidate, IsEmpty
 } from "../../references/validator";
-import {CustomInput} from "../../components";
+import {CustomInput, CustomModal} from "../../components";
 import useDimensions from "../../references/useDimensions";
-import CONSTANTS from "../../assets/constants";
 
-const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showMessage, message}) => {
+const SignUpContainer = ({onSubmit, onShowMessage, onHideMessage, onPressed, message}) => {
     const [nameSurname, setNameSurname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,24 +28,24 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
 
     const [eyeIcon, setEyeIcon] = useState('eye');
     const [hidePassword, setHidePassword] = useState(true);
-    const [messageShowed, setMessageShowed] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const [screenWidth, setScreenWidth] = useState(Math.max(Dimensions.get('screen').width, Dimensions.get('screen').height));
     const [xValueForm1] = useState(new Animated.Value(0));
     const [xValueForm2] = useState(new Animated.Value(screenWidth));
     const [form, setForm] = useState(1);
     const screenData = useDimensions();
-    flashMessageController();
 
     BackHandler.addEventListener('hardwareBackPress', () => {
         messageHide();
     });
 
+    flashMessageController();
+
     function flashMessageController() {
         useEffect(() => {
-            if (showMessage && !messageShowed) {
-                setMessageShowed(true);
-                flashShowMessage({
+            if (message !== '') {
+                setTimeout(() => flashShowMessage({
                     message: message,
                     position: 'bottom',
                     autoHide: false,
@@ -56,12 +53,17 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
                     backgroundColor: 'rgba(0, 0, 0, 0.7)',
                     color: 'white',
                     onPress: () => {
-                        messageHide(true);
+                        messageHide();
                     }
-                });
+                }), 100);
             }
-        }, [showMessage, messageShowed]);
+        }, [message]);
     }
+
+    const messageHide = () => {
+        flashHideMessage();
+        onHideMessage();
+    };
 
     useEffect(() => {
         setScreenWidth(Math.max(screenData.width, screenData.height));
@@ -74,14 +76,6 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
                 break;
         }
     }, [xValueForm1, xValueForm2]);
-
-    const messageHide = (work = false) => {
-        if (messageShowed || work) {
-            flashHideMessage();
-            hideMessage();
-            setMessageShowed(false);
-        }
-    };
 
     const moveAnimation = (back) => {
         let duration = 250;
@@ -101,6 +95,10 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
         ]).start(() => {
             setForm(back ? 1 : 2);
         });
+    };
+
+    const onModalVisible = (visible) => {
+        setModalVisible(visible);
     };
 
     return (
@@ -246,13 +244,13 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
                         }
                     }}
                 />
-                <View style={[styles.footerContainer]}>
+                <View style={[styles.footerContainer, {alignItems: 'center'}]}>
                     <Text>
                         <Text style={styles.mainText}>
                             Bir Fatura'ya üye olarak&nbsp;
                         </Text>
                         <Text style={styles.mainLinkText}
-                            //onPress={() => navigate('ForgotPassword')}
+                              onPress={() => onModalVisible(true)}
                         >
                             kullanım koşullarını
                         </Text>
@@ -269,7 +267,7 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
                         titleStyle={styles.footerButtonTitleBack}
                         containerStyle={styles.footerButtonContainerBack}
                         onPress={() => {
-                            messageHide(true);
+                            messageHide();
                             moveAnimation(true);
                         }}
                     />
@@ -305,6 +303,11 @@ const SignUpContainer = ({onSubmit, onShowMessage, hideMessage, onPressed, showM
                     />
                 </View>
             </Animated.View>
+            <CustomModal
+                content={<HTML html={CONSTANTS.USER_AGGREMENT}/>}
+                modalVisible={modalVisible}
+                onModalVisible={onModalVisible}
+            />
         </View>
     );
 };

@@ -8,18 +8,14 @@ import {IsEmpty, EmailValidate} from "../references/validator";
 
 const authReducer = (state, action) => {
     switch (action.type) {
-        case 'sign_in':
-            return {...state, token: action.payload, onPressed: false, isErrorMessage: false};
-        case 'sign_up':
-            return {...state, onPressed: false, isErrorMessage: false};
         case 'button_active':
             return {...state, onPressed: true};
+        case 'button_diactive':
+            return {...state, onPressed: false};
         case 'show_flash_message':
-            return {...state, onPressed: false, message: action.payload, showMessage: true};
+            return {...state, message: action.payload};
         case 'hide_flash_message':
-            return {...state, onPressed: false, message: '', showMessage: false};
-        case 'error_message':
-            return {...state, isErrorMessage: true};
+            return {...state, message: ''};
         default:
             return state;
     }
@@ -27,7 +23,7 @@ const authReducer = (state, action) => {
 
 const signIn = (dispatch) => async ({email, password}) => {
     dispatch({type: 'button_active'});
-    if (EmailValidate(email)) {
+    if (EmailValidate(email) && !IsEmpty(password)) {
         try {
             const params = new URLSearchParams();
             params.append('grant_type', 'password');
@@ -36,20 +32,19 @@ const signIn = (dispatch) => async ({email, password}) => {
             const response = await SignApi.post(URI.signInPath, params);
 
             await AsyncStorage.setItem('token', JSON.stringify(response.data));
-            dispatch({type: 'sign_in', payload: response.data});
             dispatch({type: 'hide_flash_message'});
         } catch (error) {
-            dispatch({type: 'show_flash_message', payload: 'E-posta veya şifre hatalı, kontrol ediniz.'});
-            dispatch({type: 'error_message'});
+            dispatch({type: 'show_flash_message', payload: CONSTANTS.INVALID_EMAIL_OR_PASSWORD});
         }
     } else {
-        dispatch({type: 'show_flash_message', payload: CONSTANTS.INVALID_EMAIL});
-        dispatch({type: 'error_message'});
+        dispatch({type: 'show_flash_message', payload: CONSTANTS.INVALID_EMAIL_OR_PASSWORD});
     }
+    dispatch({type: 'button_diactive'});
 };
 
 const signUp = (dispatch) => async ({nameSurname, email, password, companyName, mobilePhone}) => {
     dispatch({type: 'button_active'});
+    dispatch({type: 'hide_flash_message'});
     let message = '';
     try {
         const response = await SignApi.post(URI.signUpPath, {
@@ -62,9 +57,9 @@ const signUp = (dispatch) => async ({nameSurname, email, password, companyName, 
         message = response.data;
     } catch (error) {
         message = error?.response?.data?.ExceptionMessage;
-        dispatch({type: 'error_message'});
     }
     dispatch({type: 'show_flash_message', payload: message});
+    dispatch({type: 'button_diactive'});
 };
 
 const forgotPassword = (dispatch) => async ({email}) => {
@@ -78,13 +73,12 @@ const forgotPassword = (dispatch) => async ({email}) => {
             message = response.data;
         } catch (error) {
             message = error?.response?.data?.ExceptionMessage;
-            dispatch({type: 'error_message'});
         }
     } else {
         message = CONSTANTS.INVALID_EMAIL;
-        dispatch({type: 'error_message'});
     }
     dispatch({type: 'show_flash_message', payload: message});
+    dispatch({type: 'button_diactive'});
 };
 
 const onShowMessage = (dispatch) => async ({message}) => {
@@ -93,12 +87,12 @@ const onShowMessage = (dispatch) => async ({message}) => {
     }
 };
 
-const hideMessage = (dispatch) => async () => {
+const onHideMessage = (dispatch) => async () => {
     dispatch({type: 'hide_flash_message'});
 };
 
 export const {Provider, Context} = createDataContext(
     authReducer,
-    {signIn, signUp, forgotPassword, onShowMessage, hideMessage},
-    {token: null, message: '', showMessage: false, onPressed: false, isErrorMessage: false}
+    {signIn, signUp, forgotPassword, onShowMessage, onHideMessage},
+    {token: null, message: '', onPressed: false}
 );

@@ -7,7 +7,7 @@ import {Header, Logo, Info} from '../SignInScreen/components';
 import {SignUpContainer} from './components';
 
 const SignUpScreen = ({navigation}) => {
-    const {state, signUp, onShowMessage, hideMessage} = useContext(AuthContext);
+    const {state, signUp, onShowMessage, onHideMessage} = useContext(AuthContext);
 
     return (
         <ImageBackground
@@ -32,10 +32,9 @@ const SignUpScreen = ({navigation}) => {
                     </View>
                     <SignUpContainer
                         onSubmit={signUp}
-                        onPressed={state.onPressed}
                         onShowMessage={onShowMessage}
-                        hideMessage={hideMessage}
-                        showMessage={state.showMessage}
+                        onHideMessage={onHideMessage}
+                        onPressed={state.onPressed}
                         message={state.message}
                     />
                 </View>

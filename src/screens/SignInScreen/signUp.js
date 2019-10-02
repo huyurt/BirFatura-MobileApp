@@ -13,6 +13,7 @@ const SignUpContainer = props => {
                 color={props.buttonColor}
                 titleStyle={styles.buttonTitle}
                 onPress={() => {
+                    props.messageHide();
                     navigate('SignUp');
                 }}
             />
@@ -37,6 +38,7 @@ SignUpContainer.propTypes = {
     buttonTitle: PropTypes.string,
     buttonAccessibilityLabel: PropTypes.string,
     buttonColor: PropTypes.string,
+    messageHide: PropTypes.func
 };
 
 SignUpContainer.defaultProps = {

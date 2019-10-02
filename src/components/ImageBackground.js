@@ -45,7 +45,8 @@ class ImageBG extends Component {
                 {
                     toValue: 1,
                     duration: duration,
-                    easing: this.props.animation.easing
+                    easing: this.props.animation.easing,
+                    useNativeDriver: true
                 }
             )
         ]).start(() => this.setState({currentImage: image}));
