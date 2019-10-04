@@ -10,8 +10,10 @@ const SignInScreen = ({navigation}) => {
     const {state, signIn, onShowMessage, onHideMessage} = useContext(AuthContext);
 
     const messageHide = () => {
-        flashHideMessage();
-        onHideMessage();
+        setTimeout(() => {
+            flashHideMessage();
+            onHideMessage();
+        });
     };
 
     return (

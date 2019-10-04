@@ -31,14 +31,16 @@ const ForgotPasswordContainer = ({headerText, onSubmit, onShowMessage, onHideMes
                     onPress: () => {
                         messageHide();
                     }
-                }), 100);
+                }));
             }
         }, [message]);
     }
 
-    const messageHide = () => {
-        flashHideMessage();
-        onHideMessage();
+    const messageHide = async () => {
+        setTimeout(() => {
+            flashHideMessage();
+            onHideMessage();
+        });
     };
 
     return (

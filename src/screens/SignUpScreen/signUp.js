@@ -55,14 +55,16 @@ const SignUpContainer = ({onSubmit, onShowMessage, onHideMessage, onPressed, mes
                     onPress: () => {
                         messageHide();
                     }
-                }), 100);
+                }));
             }
         }, [message]);
     }
 
-    const messageHide = () => {
-        flashHideMessage();
-        onHideMessage();
+    const messageHide = async () => {
+        setTimeout(() => {
+            flashHideMessage();
+            onHideMessage();
+        });
     };
 
     useEffect(() => {

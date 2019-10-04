@@ -29,7 +29,7 @@ const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onHi
                     onPress: () => {
                         messageHide();
                     }
-                }), 100);
+                }));
             }
         }, [message]);
     }
