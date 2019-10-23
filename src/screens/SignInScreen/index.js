@@ -1,18 +1,37 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Divider} from 'react-native-elements';
+import {NavigationEvents} from "react-navigation";
+import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import {Scroll, ImageBackground} from '../../components';
 import {Header, Logo, SignUpContainer, SignInContainer, ForgotPass, Info} from './components';
 import {Context as AuthContext} from '../../context/AuthContext';
-import {hideMessage as flashHideMessage} from "react-native-flash-message";
 
 const SignInScreen = ({navigation}) => {
     const {state, signIn, onShowMessage, onHideMessage} = useContext(AuthContext);
 
+    useEffect(() => {
+        if (state.message !== '') {
+            setTimeout(() => flashShowMessage({
+                message: state.message,
+                position: 'bottom',
+                autoHide: false,
+                animated: true,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                onPress: () => {
+                    messageHide();
+                }
+            }));
+        }
+    }, [state.message]);
+
     const messageHide = () => {
         setTimeout(() => {
-            flashHideMessage();
-            onHideMessage();
+            if (state.message !== '') {
+                flashHideMessage();
+                onHideMessage();
+            }
         });
     };
 
@@ -25,6 +44,7 @@ const SignInScreen = ({navigation}) => {
                 require('../../assets/images/login/bg4.jpg')
             ]}
         >
+            <NavigationEvents onWillFocus={() => messageHide()}/>
             <Scroll>
                 <Logo/>
                 <View style={styles.container}>
@@ -39,9 +59,7 @@ const SignInScreen = ({navigation}) => {
                         headerText='Hesabınızla giriş yapabilirsiniz:'
                         onSubmit={signIn}
                         onShowMessage={onShowMessage}
-                        onHideMessage={onHideMessage}
                         onPressed={state.onPressed}
-                        message={state.message}
                         messageHide={messageHide}
                     />
                     <ForgotPass

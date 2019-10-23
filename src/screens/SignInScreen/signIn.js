@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {NavigationEvents} from "react-navigation";
 import {CustomInput} from "../../components";
 import {Button, CheckBox} from "react-native-elements";
-import {EmailValidate, IsEmpty, NameSurnameValidate, PasswordValidate} from "../../references/validator";
+import {EmailValidate, IsEmpty} from "../../utilities/validator";
 import CONSTANTS from "../../assets/constants";
 import {showMessage as flashShowMessage} from "react-native-flash-message";
 
-const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onHideMessage, onPressed, message}) => {
+const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onPressed}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(true);
@@ -14,28 +15,14 @@ const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onHi
     const [invalidEmail, setInvalidEmail] = useState(false);
     const [invalidPassword, setInvalidPassword] = useState(false);
 
-    flashMessageController();
-
-    function flashMessageController() {
-        useEffect(() => {
-            if (message !== '') {
-                setTimeout(() => flashShowMessage({
-                    message: message,
-                    position: 'bottom',
-                    autoHide: false,
-                    animated: true,
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    onPress: () => {
-                        messageHide();
-                    }
-                }));
-            }
-        }, [message]);
-    }
-
     return (
         <View>
+            <NavigationEvents
+                onWillFocus={() => {
+                    setInvalidEmail(false);
+                    setInvalidPassword(false);
+                }}
+            />
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>
                     {headerText}

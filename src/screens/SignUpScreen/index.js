@@ -1,13 +1,40 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Context as AuthContext} from '../../context/AuthContext';
 import {Divider} from 'react-native-elements';
+import {NavigationEvents} from "react-navigation";
+import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import {Scroll, ImageBackground} from '../../components';
 import {Header, Logo, Info} from '../SignInScreen/components';
 import {SignUpContainer} from './components';
 
 const SignUpScreen = ({navigation}) => {
     const {state, signUp, onShowMessage, onHideMessage} = useContext(AuthContext);
+
+    useEffect(() => {
+        if (state.message !== '') {
+            setTimeout(() => flashShowMessage({
+                message: state.message,
+                position: 'bottom',
+                autoHide: false,
+                animated: true,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                onPress: () => {
+                    messageHide();
+                }
+            }));
+        }
+    }, [state.message]);
+
+    const messageHide = () => {
+        setTimeout(() => {
+            if (state.message !== '') {
+                flashHideMessage();
+                onHideMessage();
+            }
+        });
+    };
 
     return (
         <ImageBackground
@@ -18,6 +45,7 @@ const SignUpScreen = ({navigation}) => {
                 require('../../assets/images/login/bg4.jpg')
             ]}
         >
+            <NavigationEvents onWillFocus={() => messageHide()}/>
             <Scroll>
                 <Logo/>
                 <View style={styles.container}>
@@ -33,9 +61,8 @@ const SignUpScreen = ({navigation}) => {
                     <SignUpContainer
                         onSubmit={signUp}
                         onShowMessage={onShowMessage}
-                        onHideMessage={onHideMessage}
                         onPressed={state.onPressed}
-                        message={state.message}
+                        messageHide={messageHide}
                     />
                 </View>
                 <Info/>

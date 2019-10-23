@@ -1,19 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, BackHandler, View, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Dimensions, Animated, Easing} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import HTML from "react-native-render-html";
 import CONSTANTS from "../../assets/constants";
-import {navigate} from "../../references/navigationReference";
+import {navigate} from "../../utilities/navigationReference";
 import {
     NameSurnameValidate, EmailValidate, PasswordValidate, CompanyNameValidate, MobilePhoneValidate, IsEmpty
-} from "../../references/validator";
+} from "../../utilities/validator";
 import {CustomInput, CustomModal} from "../../components";
-import useDimensions from "../../references/useDimensions";
+import useDimensions from "../../utilities/useDimensions";
 
-const SignUpContainer = ({onSubmit, onShowMessage, onHideMessage, onPressed, message}) => {
+const SignUpContainer = ({onSubmit, onShowMessage, onPressed, messageHide}) => {
     const [nameSurname, setNameSurname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -35,37 +35,6 @@ const SignUpContainer = ({onSubmit, onShowMessage, onHideMessage, onPressed, mes
     const [xValueForm2] = useState(new Animated.Value(screenWidth));
     const [form, setForm] = useState(1);
     const screenData = useDimensions();
-
-    BackHandler.addEventListener('hardwareBackPress', () => {
-        messageHide();
-    });
-
-    flashMessageController();
-
-    function flashMessageController() {
-        useEffect(() => {
-            if (message !== '') {
-                setTimeout(() => flashShowMessage({
-                    message: message,
-                    position: 'bottom',
-                    autoHide: false,
-                    animated: true,
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    color: 'white',
-                    onPress: () => {
-                        messageHide();
-                    }
-                }));
-            }
-        }, [message]);
-    }
-
-    const messageHide = async () => {
-        setTimeout(() => {
-            flashHideMessage();
-            onHideMessage();
-        });
-    };
 
     useEffect(() => {
         setScreenWidth(Math.max(screenData.width, screenData.height));

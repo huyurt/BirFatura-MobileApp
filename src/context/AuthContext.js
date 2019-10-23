@@ -2,12 +2,14 @@ import {AsyncStorage} from 'react-native';
 import createDataContext from "./createDataContext";
 import CONSTANTS from '../assets/constants';
 import URI from '../services/birfatura/uri';
-import {navigate} from "../references/navigationReference";
+import {navigate} from "../utilities/navigationReference";
 import {SignApi} from '../services/birfatura/BirFaturaApi';
-import {IsEmpty, EmailValidate} from "../references/validator";
+import {IsEmpty, EmailValidate} from "../utilities/validator";
 
 const authReducer = (state, action) => {
     switch (action.type) {
+        case 'sign_up':
+            return {...state, token: action.payload};
         case 'button_active':
             return {...state, onPressed: true};
         case 'button_diactive':
@@ -31,7 +33,9 @@ const signIn = (dispatch) => async ({email, password}) => {
             params.append('password', password);
             const response = await SignApi.post(URI.signInPath, params);
 
+            // mesajın doğruluk kontrolü yapılacak
             await AsyncStorage.setItem('token', JSON.stringify(response.data));
+            dispatch({type: 'sign_up', payload: response.data.token});
             dispatch({type: 'hide_flash_message'});
         } catch (error) {
             dispatch({type: 'show_flash_message', payload: CONSTANTS.INVALID_EMAIL_OR_PASSWORD});

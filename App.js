@@ -2,7 +2,7 @@ import React from "react";
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import FlashMessage from "react-native-flash-message";
-import {setNavigator} from "./src/references/navigationReference";
+import {setNavigator} from "./src/utilities/navigationReference";
 import {Provider as AuthProvider} from './src/context/AuthContext';
 import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from "./src/screens/SignUpScreen";

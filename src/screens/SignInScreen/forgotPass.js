@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {navigate} from "../../references/navigationReference";
+import {navigate} from "../../utilities/navigationReference";
 
 const ForgotPass = props => {
     return (
@@ -15,7 +15,6 @@ const ForgotPass = props => {
                 <Text>
                     <Text style={styles.mainLinkText}
                           onPress={() => {
-                              props.messageHide();
                               navigate('ForgotPassword')
                           }}
                     >
