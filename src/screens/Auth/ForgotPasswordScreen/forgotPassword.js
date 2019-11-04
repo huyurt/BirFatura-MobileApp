@@ -1,28 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {NavigationEvents} from "react-navigation";
-import {CustomInput} from "../../components";
-import {Button, CheckBox} from "react-native-elements";
-import {EmailValidate, IsEmpty} from "../../utilities/validator";
-import CONSTANTS from "../../assets/constants";
-import {showMessage as flashShowMessage} from "react-native-flash-message";
+import PropTypes from 'prop-types';
+import {Button} from "react-native-elements";
+import {navigate} from "../../../utilities/navigationReference";
+import {EmailValidate} from "../../../utilities/validator";
+import {CustomInput} from "../../../components";
+import CONSTANTS from "../../../assets/constants";
 
-const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onPressed}) => {
+const ForgotPasswordContainer = ({headerText, onSubmit, onPressed, onShowMessage, messageHide}) => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [checked, setChecked] = useState(true);
-
     const [invalidEmail, setInvalidEmail] = useState(false);
-    const [invalidPassword, setInvalidPassword] = useState(false);
 
     return (
         <View>
-            <NavigationEvents
-                onWillFocus={() => {
-                    setInvalidEmail(false);
-                    setInvalidPassword(false);
-                }}
-            />
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>
                     {headerText}
@@ -43,62 +33,48 @@ const SignInContainer = ({headerText, onSubmit, messageHide, onShowMessage, onPr
                     }
                 }}
             />
-            <CustomInput
-                password={true}
-                iconName='lock'
-                placeHolder='Şifreniz'
-                autoCapitalize='none'
-                value={password}
-                onChangeText={setPassword}
-                flashMessageShowed={invalidPassword}
-                onChange={(e) => {
-                    if (invalidPassword && !IsEmpty(e.nativeEvent.text)) {
-                        setInvalidPassword(false);
-                        messageHide();
-                    }
-                }}
-            />
             <View style={styles.footerContainer}>
-                <CheckBox
-                    title='Beni Hatırla'
-                    textStyle={styles.footerCheckBoxText}
-                    containerStyle={styles.footerCheckBoxContainer}
-                    checked={checked}
-                    onPress={() => setChecked(!checked)}
+                <Button
+                    title='< GERİ'
+                    buttonStyle={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                    accessibilityLabel='< GERİ'
+                    titleStyle={styles.footerButtonTitleBack}
+                    containerStyle={styles.footerButtonContainerBack}
+                    onPress={() => {
+                        messageHide();
+                        navigate('SignIn');
+                    }}
                 />
                 <Button
-                    title='GİRİŞ YAP'
-                    accessibilityLabel='GİRİŞ YAP'
+                    title='ŞİFREMİ HATIRLAT'
+                    accessibilityLabel='ÜYE OL'
                     titleStyle={styles.footerButtonTitle}
                     containerStyle={styles.footerButtonContainer}
                     loading={onPressed}
                     disabled={onPressed}
                     disabledStyle={styles.footerButtonDisabledContainer}
                     onPress={() => {
-                        let message = '';
-                        let invalid = false;
                         if (!EmailValidate(email)) {
-                            message = CONSTANTS.INVALID_EMAIL;
+                            let message = CONSTANTS.INVALID_EMAIL;
                             setInvalidEmail(true);
-                            invalid = true;
-                        }
-                        if (IsEmpty(password)) {
-                            message = CONSTANTS.INVALID_EMAIL_OR_PASSWORD;
-                            setInvalidPassword(true);
-                            invalid = true;
-                        }
-
-                        if (invalid) {
                             onShowMessage({message});
                         } else {
                             messageHide();
-                            onSubmit({email, password});
+                            onSubmit({email});
                         }
                     }}
                 />
             </View>
         </View>
     );
+};
+
+ForgotPasswordContainer.propTypes = {
+    headerText: PropTypes.string,
+    onSubmit: PropTypes.func,
+    hideMessage: PropTypes.func,
+    onPressed: PropTypes.bool,
+    isErrorMessage: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
@@ -129,6 +105,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'normal'
     },
+    footerButtonContainerBack: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center'
+    },
+    footerButtonTitleBack: {
+        color: '#3598DC',
+        fontSize: 11
+    },
     footerButtonContainer: {
         flex: 1,
         alignItems: 'flex-end',
@@ -142,4 +127,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export {SignInContainer};
+export {ForgotPasswordContainer};

@@ -1,5 +1,6 @@
 module.exports = {
     BIR_FATURA_KURULUS_YILI: 2016,
+    INVALID_CONNECTION: 'İşleminiz gerçekleştiremiyoruz, tekrar deneyiniz.',
     INVALID_EMAIL_OR_PASSWORD: 'E-postanız veya şifreniz hatalı, kontrol ediniz.',
     INVALID_NAME_SURNAME: 'Adınızı ve soyadınızı en az 5 karakter uzunluğunda giriniz.',
     INVALID_EMAIL: 'E-posta adresiniz hatalı, kontrol ediniz.',

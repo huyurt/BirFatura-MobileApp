@@ -5,6 +5,7 @@ import URI from '../services/birfatura/uri';
 import {navigate} from "../utilities/navigationReference";
 import {SignApi} from '../services/birfatura/BirFaturaApi';
 import {IsEmpty, EmailValidate} from "../utilities/validator";
+import {setToken, userToken} from "../utilities/useToken";
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -23,7 +24,7 @@ const authReducer = (state, action) => {
     }
 };
 
-const signIn = (dispatch) => async ({email, password}) => {
+const signIn = (dispatch) => async ({email, password, rememberMe}) => {
     dispatch({type: 'button_active'});
     if (EmailValidate(email) && !IsEmpty(password)) {
         try {
@@ -33,11 +34,18 @@ const signIn = (dispatch) => async ({email, password}) => {
             params.append('password', password);
             const response = await SignApi.post(URI.signInPath, params);
 
-            // mesajın doğruluk kontrolü yapılacak
-            await AsyncStorage.setItem('token', JSON.stringify(response.data));
-            dispatch({type: 'sign_up', payload: response.data.token});
-            dispatch({type: 'hide_flash_message'});
+            response.data.rememberMe = rememberMe;
+            await AsyncStorage.setItem('token', JSON.stringify(response.data)).then(() => {
+                dispatch({type: 'sign_up', payload: response.data.token});
+                dispatch({type: 'hide_flash_message'});
+                setToken().then(() => {
+                    if (userToken.token) {
+                        navigate('Dashboard');
+                    }
+                });
+            });
         } catch (error) {
+            await AsyncStorage.removeItem('token');
             dispatch({type: 'show_flash_message', payload: CONSTANTS.INVALID_EMAIL_OR_PASSWORD});
         }
     } else {
@@ -60,7 +68,7 @@ const signUp = (dispatch) => async ({nameSurname, email, password, companyName, 
         });
         message = response.data;
     } catch (error) {
-        message = error?.response?.data?.ExceptionMessage;
+        message = error?.response?.data?.ExceptionMessage ?? CONSTANTS.INVALID_CONNECTION;
     }
     dispatch({type: 'show_flash_message', payload: message});
     dispatch({type: 'button_diactive'});
@@ -76,7 +84,7 @@ const forgotPassword = (dispatch) => async ({email}) => {
             });
             message = response.data;
         } catch (error) {
-            message = error?.response?.data?.ExceptionMessage;
+            message = error?.response?.data?.ExceptionMessage ?? CONSTANTS.INVALID_CONNECTION;
         }
     } else {
         message = CONSTANTS.INVALID_EMAIL;

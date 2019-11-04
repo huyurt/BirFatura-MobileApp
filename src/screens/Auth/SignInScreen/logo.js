@@ -4,8 +4,11 @@ import {StyleSheet, Image, View} from "react-native";
 const Logo = props => {
     return (
         <View style={styles.container}>
-            <Image resizeMode="contain" style={styles.image}
-                   source={require('../../assets/images/birfatura.png')}/>
+            <Image
+                resizeMode="contain"
+                style={styles.image}
+                source={require('../../../assets/images/birfatura.png')}
+            />
         </View>
     );
 };
@@ -13,9 +16,9 @@ const Logo = props => {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         flexGrow: 1,
-        marginTop: 100
+        paddingVertical: 10
     },
     image: {
         height: 50,

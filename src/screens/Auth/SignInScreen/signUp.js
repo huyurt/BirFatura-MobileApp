@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {navigate} from "../../utilities/navigationReference";
+import {navigate} from "../../../utilities/navigationReference";
 import {Button} from "react-native-elements";
 
 const SignUpContainer = props => {

@@ -1,19 +1,18 @@
 import React, {useContext, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Context as AuthContext} from '../../context/AuthContext';
+import {StyleSheet, View} from 'react-native';
 import {Divider} from 'react-native-elements';
 import {NavigationEvents} from "react-navigation";
-import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
-import {Scroll, ImageBackground} from '../../components';
-import {Header, Logo, Info} from '../SignInScreen/components';
-import {SignUpContainer} from './components';
+import {hideMessage, showMessage} from "react-native-flash-message";
+import {Scroll, ImageBackground} from '../../../components';
+import {Header, Logo, SignUpContainer, SignInContainer, ForgotPass, Info} from './components';
+import {Context as AuthContext} from '../../../context/AuthContext';
 
-const SignUpScreen = ({navigation}) => {
-    const {state, signUp, onShowMessage, onHideMessage} = useContext(AuthContext);
+const SignInScreen = ({navigation}) => {
+    const {state, signIn, onShowMessage, onHideMessage} = useContext(AuthContext);
 
     useEffect(() => {
         if (state.message !== '') {
-            setTimeout(() => flashShowMessage({
+            setTimeout(() => showMessage({
                 message: state.message,
                 position: 'bottom',
                 autoHide: false,
@@ -30,7 +29,7 @@ const SignUpScreen = ({navigation}) => {
     const messageHide = () => {
         setTimeout(() => {
             if (state.message !== '') {
-                flashHideMessage();
+                hideMessage();
                 onHideMessage();
             }
         });
@@ -39,10 +38,10 @@ const SignUpScreen = ({navigation}) => {
     return (
         <ImageBackground
             imagePaths={[
-                require('../../assets/images/login/bg1.jpg'),
-                require('../../assets/images/login/bg2.jpg'),
-                require('../../assets/images/login/bg3.jpg'),
-                require('../../assets/images/login/bg4.jpg')
+                require('../../../assets/images/login/bg1.jpg'),
+                require('../../../assets/images/login/bg2.jpg'),
+                require('../../../assets/images/login/bg3.jpg'),
+                require('../../../assets/images/login/bg4.jpg')
             ]}
         >
             <NavigationEvents onWillFocus={() => messageHide()}/>
@@ -50,18 +49,23 @@ const SignUpScreen = ({navigation}) => {
                 <Logo/>
                 <View style={styles.container}>
                     <Header
-                        title="Bir Fatura'ya Üye Ol"
+                        title="Bir Fatura'ya Hoş Geldiniz"
                     />
                     <Divider style={{marginBottom: 10, backgroundColor: 'white'}}/>
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.header}>
-                            Üye olmak için formu doldurun:
-                        </Text>
-                    </View>
                     <SignUpContainer
-                        onSubmit={signUp}
+                        messageHide={messageHide}
+                    />
+                    <SignInContainer
+                        headerText='Hesabınızla giriş yapabilirsiniz:'
+                        onSubmit={signIn}
                         onShowMessage={onShowMessage}
                         onPressed={state.onPressed}
+                        messageHide={messageHide}
+                    />
+                    <ForgotPass
+                        headerText='Şifrenizi Unuttunuz Mu?'
+                        mainLinkText='Buraya'
+                        mainText=' tıklayarak şifrenizi sıfırlamayı talep edebilirsiniz.'
                         messageHide={messageHide}
                     />
                 </View>
@@ -71,7 +75,7 @@ const SignUpScreen = ({navigation}) => {
     );
 };
 
-SignUpScreen.navigationOptions = () => {
+SignInScreen.navigationOptions = () => {
     return {
         header: null
     }
@@ -80,22 +84,13 @@ SignUpScreen.navigationOptions = () => {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 40,
-        marginTop: 40,
         paddingHorizontal: 10,
         paddingVertical: 15,
         backgroundColor: 'rgba(0,0,0,0.6)',
         borderWidth: 1,
         borderColor: 'rgba(0,0,0,0.6)',
         borderRadius: 7
-    },
-    headerContainer: {
-        marginBottom: 10,
-        paddingHorizontal: 10
-    },
-    header: {
-        color: '#fff',
-        fontSize: 13
     }
 });
 
-export default SignUpScreen;
+export default SignInScreen;

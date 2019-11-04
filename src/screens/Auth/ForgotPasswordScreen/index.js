@@ -1,18 +1,19 @@
 import React, {useContext, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Context as AuthContext} from '../../../context/AuthContext';
 import {Divider} from 'react-native-elements';
 import {NavigationEvents} from "react-navigation";
-import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
-import {Scroll, ImageBackground} from '../../components';
-import {Header, Logo, SignUpContainer, SignInContainer, ForgotPass, Info} from './components';
-import {Context as AuthContext} from '../../context/AuthContext';
+import {hideMessage, showMessage} from "react-native-flash-message";
+import {Scroll, ImageBackground} from '../../../components';
+import {Header, Logo, Info} from '../SignInScreen/components';
+import {ForgotPasswordContainer} from './components';
 
-const SignInScreen = ({navigation}) => {
-    const {state, signIn, onShowMessage, onHideMessage} = useContext(AuthContext);
+const ForgotPasswordScreen = ({navigation}) => {
+    const {state, forgotPassword, onShowMessage, onHideMessage} = useContext(AuthContext);
 
     useEffect(() => {
         if (state.message !== '') {
-            setTimeout(() => flashShowMessage({
+            setTimeout(() => showMessage({
                 message: state.message,
                 position: 'bottom',
                 autoHide: false,
@@ -29,7 +30,7 @@ const SignInScreen = ({navigation}) => {
     const messageHide = () => {
         setTimeout(() => {
             if (state.message !== '') {
-                flashHideMessage();
+                hideMessage();
                 onHideMessage();
             }
         });
@@ -38,10 +39,10 @@ const SignInScreen = ({navigation}) => {
     return (
         <ImageBackground
             imagePaths={[
-                require('../../assets/images/login/bg1.jpg'),
-                require('../../assets/images/login/bg2.jpg'),
-                require('../../assets/images/login/bg3.jpg'),
-                require('../../assets/images/login/bg4.jpg')
+                require('../../../assets/images/login/bg1.jpg'),
+                require('../../../assets/images/login/bg2.jpg'),
+                require('../../../assets/images/login/bg3.jpg'),
+                require('../../../assets/images/login/bg4.jpg')
             ]}
         >
             <NavigationEvents onWillFocus={() => messageHide()}/>
@@ -49,23 +50,14 @@ const SignInScreen = ({navigation}) => {
                 <Logo/>
                 <View style={styles.container}>
                     <Header
-                        title="Bir Fatura'ya Hoş Geldiniz"
+                        title="Şifremi Unuttum"
                     />
                     <Divider style={{marginBottom: 10, backgroundColor: 'white'}}/>
-                    <SignUpContainer
-                        messageHide={messageHide}
-                    />
-                    <SignInContainer
-                        headerText='Hesabınızla giriş yapabilirsiniz:'
-                        onSubmit={signIn}
-                        onShowMessage={onShowMessage}
+                    <ForgotPasswordContainer
+                        headerText='Şifrenizi sıfırlamak için e-posta adresinizi girin:'
+                        onSubmit={forgotPassword}
                         onPressed={state.onPressed}
-                        messageHide={messageHide}
-                    />
-                    <ForgotPass
-                        headerText='Şifrenizi Unuttunuz Mu?'
-                        mainLinkText='Buraya'
-                        mainText=' tıklayarak şifrenizi sıfırlamayı talep edebilirsiniz.'
+                        onShowMessage={onShowMessage}
                         messageHide={messageHide}
                     />
                 </View>
@@ -75,7 +67,7 @@ const SignInScreen = ({navigation}) => {
     );
 };
 
-SignInScreen.navigationOptions = () => {
+ForgotPasswordScreen.navigationOptions = () => {
     return {
         header: null
     }
@@ -94,4 +86,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SignInScreen;
+export default ForgotPasswordScreen;

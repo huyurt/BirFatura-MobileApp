@@ -3,15 +3,14 @@ import {StyleSheet, View, Text, TouchableOpacity, Dimensions, Animated, Easing} 
 import PropTypes from 'prop-types';
 import {Button} from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {hideMessage as flashHideMessage, showMessage as flashShowMessage} from "react-native-flash-message";
 import HTML from "react-native-render-html";
-import CONSTANTS from "../../assets/constants";
-import {navigate} from "../../utilities/navigationReference";
+import CONSTANTS from "../../../assets/constants";
+import {navigate} from "../../../utilities/navigationReference";
 import {
     NameSurnameValidate, EmailValidate, PasswordValidate, CompanyNameValidate, MobilePhoneValidate, IsEmpty
-} from "../../utilities/validator";
-import {CustomInput, CustomModal} from "../../components";
-import useDimensions from "../../utilities/useDimensions";
+} from "../../../utilities/validator";
+import {CustomInput, CustomModal} from "../../../components";
+import useDimensions from "../../../utilities/useDimensions";
 
 const SignUpContainer = ({onSubmit, onShowMessage, onPressed, messageHide}) => {
     const [nameSurname, setNameSurname] = useState('');
@@ -288,8 +287,6 @@ SignUpContainer.propTypes = {
     onShowMessage: PropTypes.func,
     hideMessage: PropTypes.func,
     onPressed: PropTypes.bool,
-    showMessage: PropTypes.bool,
-    message: PropTypes.string
 };
 
 const styles = StyleSheet.create({

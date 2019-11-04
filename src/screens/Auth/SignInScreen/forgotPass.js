@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {navigate} from "../../utilities/navigationReference";
+import {navigate} from "../../../utilities/navigationReference";
 
 const ForgotPass = props => {
     return (

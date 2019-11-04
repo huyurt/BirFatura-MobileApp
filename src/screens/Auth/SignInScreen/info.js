@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
-import CONSTANTS from '../../assets/constants';
+import CONSTANTS from '../../../assets/constants';
 
 class Info extends Component {
     constructor(props) {
