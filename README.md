@@ -1,0 +1,1 @@
+# Bağımsız React Native projesi
