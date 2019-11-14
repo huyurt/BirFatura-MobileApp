@@ -84,4 +84,4 @@ npm-debug.*
 web-build/
 web-report/
 
-src/services/birfatura/uri.*
+src/services/mainservice/uri.*

@@ -1,9 +1,9 @@
 import {AsyncStorage} from 'react-native';
 import createDataContext from "./createDataContext";
 import CONSTANTS from '../assets/constants';
-import URI from '../services/birfatura/uri';
+import URI from '../services/mainservice/uri';
 import {navigate} from "../utilities/navigationReference";
-import {SignApi} from '../services/birfatura/BirFaturaApi';
+import {SignApi} from '../services/mainservice/MainServiceApi';
 import {IsEmpty, EmailValidate} from "../utilities/validator";
 import {setToken, userToken} from "../utilities/useToken";
 

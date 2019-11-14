@@ -22,7 +22,7 @@ class AuthLoadingScreen extends React.Component {
                 <Image
                     resizeMode="contain"
                     style={styles.image}
-                    source={require('../../assets/images/birfatura.png')}
+                    source={require('../../assets/images/logo.png')}
                 />
             </View>
         );
